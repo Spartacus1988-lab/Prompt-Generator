@@ -1,0 +1,26 @@
+name: Say Hi Every 5 Hours
+
+on:
+  schedule:
+    - cron: '0 */5 * * *'
+  workflow_dispatch:
+
+jobs:
+  say-hi:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Write היי
+        run: |
+          echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') — היי" >> hi-log.txt
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add hi-log.txt
+          git commit -m "היי — $(date -u '+%Y-%m-%d %H:%M')"
+          git push
